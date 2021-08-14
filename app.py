@@ -1,7 +1,9 @@
+import hmac
 from flask import *
 from flask_mail import Mail, Message
 from smtplib import SMTPRecipientsRefused
 from flask_cors import CORS
+from flask_jwt import JWT
 import sqlite3
 
 import cloudinary
@@ -121,6 +123,18 @@ admin = fetch_admin()
 adminname_table = {a.admin_username: a for a in admin}
 adminid_table = {a.admin_id: a for a in admin}
 
+
+def authenticate(username, password):
+    user = username_table.get(username, None)
+    if user and hmac.compare_digest(user.password.encode('utf-8'), password.encode('utf-8')):
+        return user
+
+
+def identity(payload):
+    user_id = payload['identity']
+    return userid_table.get(user_id, None)
+
+
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'this-is-a-secret'
@@ -132,6 +146,7 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['CORS-HEADERS'] = ['Content-Type']
 mail = Mail(app)
+jwt = JWT(app, authenticate, identity)
 CORS(app, resources={r"/*":{"origins": "*"}})
 
 
