@@ -39,6 +39,9 @@ class Database(object):
     def fetch(self):
         return self.cursor.fetchall()
 
+    def fetchone(self):
+        return self.cursor.fetchone()
+
 
 # fetching users from the database
 def fetch_users():
@@ -199,6 +202,30 @@ def admin_registration():
     else:
         response['message'] = "failed"
         response['status_code'] = 400
+
+
+@app.route("/admin-login/", methods=["POST"])
+def login():
+    response = {}
+    if request.method == "POST":
+        username = request.json["admin_username"]
+        password = request.json["admin_password"]
+        conn = sqlite3.connect("shopping.db")
+        c = conn.cursor()
+        statement =(f"SELECT * FROM admin WHERE admin_username='{username}' and admin_password ="
+                    f"'{password}'")
+        c.execute(statement)
+        if not c.fetchone():
+            response['message'] = "failed"
+            response["status_code"] = 401
+            return response
+        else:
+            response['message'] = "welcome admin user"
+            response["status_code"] = 201
+            return response
+    else:
+        return "wrong method"
+
 
 
 # protected route that creates products
