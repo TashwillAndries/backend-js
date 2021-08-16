@@ -227,6 +227,31 @@ def login():
         return "wrong method"
 
 
+@app.route('/show-users/', methods=['GET'])
+def show_users():
+    response = {}
+    with sqlite3.connect('shopping.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM user")
+
+        all_users = cursor.fetchall()
+
+    response['status_code'] = 200
+    response['data'] = all_users
+    return response
+
+
+@app.route('/show-user/<username>', methods=["GET"])
+def view_user(username):
+    response = {}
+    with sqlite3.connect('shopping.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM user WHERE username='" + str(username) + "'")
+        response['status_code'] = 200
+        response['data'] = cursor.fetchone()
+        response['message'] = "user retrieved successfully"
+    return jsonify(response)
+
 
 # protected route that creates products
 @app.route('/products-create/', methods=['POST'])
