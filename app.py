@@ -359,7 +359,7 @@ def delete_post(product_id):
     response['status_code'] = 200
     response['message'] = "product deleted successfully."
     return response
-
+ 
 
 def upload_file():
     app.logger.info('in upload route')
