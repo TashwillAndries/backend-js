@@ -190,8 +190,8 @@ def admin_registration():
     response = {}
     db = Database()
     if request.method == "POST":
-        username = request.form['admin_username']
-        password = request.form['admin_password']
+        username = request.json['admin_username']
+        password = request.json['admin_password']
 
         query = "INSERT INTO admin (admin_username,admin_password) VALUES(?,?)"
         values = (username, password)
