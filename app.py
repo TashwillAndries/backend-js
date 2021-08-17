@@ -35,6 +35,7 @@ class Database(object):
 
     def single_select(self, query):
         self.cursor.execute(query)
+        self.conn.commit()
 
     def fetch(self):
         return self.cursor.fetchall()
@@ -346,6 +347,18 @@ def edit_product(product_id):
                     response['message'] = "Update was successful"
                     response["status_code"] = 201
                 return response
+
+
+@app.route("/delete-user/<int:user_id>")
+def delete_user(user_id):
+    response = {}
+    database = Database()
+
+    query = "DELETE FROM user WHERE user_id= " + str(user_id)
+    database.single_select(query)
+    response['status_code'] = 200
+    response['message'] = "user deleted successfully."
+    return response
 
 
 # route that deletes a single product
