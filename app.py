@@ -354,7 +354,7 @@ def delete_user(user_id):
     response = {}
     database = Database()
 
-    query = "DELETE FROM user WHERE user_id= " + str(user_id)
+    query = "DELETE FROM user WHERE user_id='" + str(user_id) + "'"
     database.single_select(query)
     response['status_code'] = 200
     response['message'] = "user deleted successfully."
