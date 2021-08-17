@@ -205,6 +205,29 @@ def admin_registration():
         response['status_code'] = 400
 
 
+@app.route("/user-login/", methods=["POST"])
+def login_user():
+    response = {}
+    if request.method == "POST":
+        username = request.json["username"]
+        password = request.json["password"]
+        conn = sqlite3.connect("shopping.db")
+        c = conn.cursor()
+        statement =(f"SELECT * FROM user WHERE username='{username}' and password ="
+                    f"'{password}'")
+        c.execute(statement)
+        if not c.fetchone():
+            response['message'] = "failed"
+            response["status_code"] = 401
+            return response
+        else:
+            response['message'] = "welcome user"
+            response["status_code"] = 201
+            return response
+    else:
+        return "wrong method"
+
+
 @app.route("/admin-login/", methods=["POST"])
 def login():
     response = {}
